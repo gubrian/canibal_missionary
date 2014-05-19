@@ -43,6 +43,8 @@ public class StartBoat {
 		lock.lock();
 		if(mBoatMax == 0) {
 			m.await();
+			
+			
 		}
 		
 	}
