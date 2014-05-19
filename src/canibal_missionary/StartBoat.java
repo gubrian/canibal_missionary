@@ -17,35 +17,50 @@ public class StartBoat {
 	private int cBoatMax = 0;
 	private int mBoatMax = 0;
 	
-	String message = "";
+	String message = "Boat leaving with";
 	
 	public StartBoat(int cOnBoat, int mOnBoat) {
 		this.cOnBoat = cOnBoat;
 		this.mOnBoat = mOnBoat;
+		calculateMax();
 	}
 	
 	/**
 	 * Thread to process cannibal.
 	 * @throws InterruptedException 
 	 */
-	public void cannibalArrive() throws InterruptedException {
+	public void cannibalArrive(int id) throws InterruptedException {
 		lock.lock();
 		while(cBoatMax == 0) {
 			c.await();
 		}
+		cOnBoat--;
+		cBoatMax--;
+		boatSpace--;
+		message+= "  Cannibal" + id;
+		if(boatSpace == 0) {
+			onBoat();
+		}
+		lock.unlock();
 	}
 	
 	/**
 	 * Thread to process missionary
 	 * @throws InterruptedException
 	 */
-	public void missionaryArrive() throws InterruptedException {
+	public void missionaryArrive(int id) throws InterruptedException {
 		lock.lock();
 		while(mBoatMax == 0) {
 			m.await();
 		}
-		
-		
+		mOnBoat--;
+		mBoatMax--;
+		boatSpace--;
+		message += "  Missionary" + id;
+		if(boatSpace == 0) {
+			onBoat();
+		}
+		lock.unlock();
 	}
 	
 	
@@ -53,16 +68,17 @@ public class StartBoat {
 	 * The thread to make boat leave.
 	 */
 	public void onBoat() {
-		boatSpace = 3;			
+		System.out.println(message);
+		if(mOnBoat == 0 && cOnBoat == 0) {
+			return;
+		}
+		boatSpace = 3;		
+		calculateMax();
+		message = "Boat leaving with";
 		m.signal();
 		c.signal();	
-		message = "Boat leaving with ";
-		cOnBoat = 0;
-		mOnBoat = 0;
-		calculateMax();
+		
 	}
-	
-	
 	
 	/**
 	 * This function is used to get the maximum number for cannibals and missionaries in 
@@ -93,7 +109,11 @@ public class StartBoat {
 
 		@Override
 		public void run() {
-			
+			try {
+				cannibalArrive(id);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 		
 	}
@@ -108,22 +128,35 @@ public class StartBoat {
 
 		@Override
 		public void run() {
-			
+			try {
+				missionaryArrive(id);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-		
 	}
 	
-	
 	public static void main(String args[]) {
-		int cannibalNumber = 5;
-		int missionaryNumber = 4;
+		int cannibalNumber = 1;
+		int missionaryNumber = 5;
 		StartBoat can_miss = new StartBoat(cannibalNumber, missionaryNumber);
-		for(int i = 0; i < cannibalNumber; i++) {
-			new Thread(can_miss.new cBoat(i)).start();
-		}
 		for(int i = 0; i < missionaryNumber;i++) {
 			new Thread(can_miss.new mBoat(i)).start();
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
+		for(int i = 0; i < cannibalNumber; i++) {
+			new Thread(can_miss.new cBoat(i)).start();
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
 	}
 
 }
