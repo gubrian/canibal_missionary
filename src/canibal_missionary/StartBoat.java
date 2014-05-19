@@ -41,11 +41,10 @@ public class StartBoat {
 	 */
 	public void missionaryArrive() throws InterruptedException {
 		lock.lock();
-		if(mBoatMax == 0) {
+		while(mBoatMax == 0) {
 			m.await();
-			
-			
 		}
+		
 		
 	}
 	
