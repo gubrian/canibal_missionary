@@ -30,7 +30,7 @@ public class StartBoat {
 	 */
 	public void cannibalArrive() throws InterruptedException {
 		lock.lock();
-		if(cBoatMax == 0) {
+		while(cBoatMax == 0) {
 			c.await();
 		}
 	}
