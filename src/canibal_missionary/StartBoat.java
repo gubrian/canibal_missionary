@@ -96,7 +96,7 @@ public class StartBoat {
 	 */
 	private void calculateMax() {
 		if (mOnBoat <= 3) {
-			mBoatMax = mOnBoat;
+			mBoatMax = mOnBoat != 1 ? mOnBoat : 0;
 			cBoatMax = boatSpace - mBoatMax;
 		} else {
 			if (mOnBoat - 3 > 2 * (cOnBoat % 3)) {
@@ -110,7 +110,7 @@ public class StartBoat {
 
 	public static void main(String args[]) {
 		int cannibalNumber = 4;
-		int missionaryNumber = 1;
+		int missionaryNumber = 2;
 		StartBoat can_mis = new StartBoat(cannibalNumber, missionaryNumber);
 		for (int i = 1; i <= cannibalNumber; i++) {
 			new Thread(new CannibalBoat(i, can_mis)).start();
