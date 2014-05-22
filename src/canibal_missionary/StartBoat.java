@@ -1,5 +1,15 @@
 package canibal_missionary;
 
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -79,13 +89,22 @@ public class StartBoat {
 	 * The thread to make boat leave.
 	 */
 	public void onBoat() {
-		System.out.println(message);
+		message += "\r\n";
 		if (mOnBoat == 0 && cOnBoat == 0) {
+			BufferedWriter writer;
+			try {
+				writer = new BufferedWriter( new FileWriter("output.txt"));
+				writer.write(message);
+				System.out.println(message);
+				writer.close( );
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			return;
 		}
 		boatSpace = 3;
 		calculateMax();
-		message = "Boat leaving with";
+		message += "Boat leaving with";
 		m.signalAll();
 		c.signalAll();
 	}
@@ -107,16 +126,39 @@ public class StartBoat {
 			cBoatMax = 1;
 		}
 	}
-
-	public static void main(String args[]) {
-		int cannibalNumber = 4;
-		int missionaryNumber = 2;
+	
+	public static void readfile(ArrayList<Integer> cannibals, ArrayList<Integer> missionaries) throws IOException {
+		FileInputStream fstream = new FileInputStream("input.txt");
+		BufferedReader read= new BufferedReader(new InputStreamReader(fstream));
+		StringTokenizer st;
+		String data = read.readLine();
+		while(!(data == null || data.equals(""))){
+			st = new StringTokenizer(data);
+			String species = st.nextToken();
+			String idnumber = st.nextToken();
+			if(species.equals("Cannibal")){
+				cannibals.add(Integer.parseInt(idnumber));
+			} else if(species.equals("Missionary")){
+				missionaries.add(Integer.parseInt(idnumber));
+			}
+			data = read.readLine();
+		}
+		fstream.close();
+	}
+	
+	public static void main(String args[]) throws IOException {
+		ArrayList<Integer> cannibals = new ArrayList<Integer>();
+		ArrayList<Integer> missionaries = new ArrayList<Integer>();
+		readfile(cannibals, missionaries);
+		int cannibalNumber = cannibals.size();
+		int missionaryNumber = missionaries.size();
 		StartBoat can_mis = new StartBoat(cannibalNumber, missionaryNumber);
-		for (int i = 1; i <= cannibalNumber; i++) {
-			new Thread(new CannibalBoat(i, can_mis)).start();
+		for (int i = 0; i < cannibalNumber; i++) {
+			new Thread(new CannibalBoat(cannibals.get(i), can_mis)).start();
 		}
-		for (int i = 1; i <= missionaryNumber; i++) {
-			new Thread(new MissionaryBoat(i, can_mis)).start();
+		for (int i = 0; i < missionaryNumber; i++) {
+			new Thread(new MissionaryBoat(missionaries.get(i), can_mis)).start();
 		}
+		return;
 	}
 }
