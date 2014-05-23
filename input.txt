@@ -1,15 +1,6 @@
 Missionary 7
 Missionary 8
 Missionary 10
+Missionary 1
 Cannibal 1
 Cannibal 2
-Missionary 1
-Missionary 2
-Cannibal 3
-Missionary 3
-Missionary 4
-Cannibal 4
-Cannibal 5
-Missionary 5
-Missionary 6
-Cannibal 6

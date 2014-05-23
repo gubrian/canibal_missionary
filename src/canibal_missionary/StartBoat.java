@@ -2,12 +2,10 @@ package canibal_missionary;
 
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.concurrent.locks.Condition;
@@ -16,14 +14,19 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class StartBoat {
 
+	// The total number of people that will be on the boat.
 	private int boatSpace = 3;
+	// The number of cannibals and missionaries that remain on the bank.
 	private int cOnBoat = 0;
 	private int mOnBoat = 0;
+	// Lock for multi-thread
 	final Lock lock = new ReentrantLock();
 	final Condition m = lock.newCondition();
 	final Condition c = lock.newCondition();
+	// Maximum number of cannibals and missionaries that will be on the boat.
 	private int cBoatMax = 0;
 	private int mBoatMax = 0;
+	// Information for scheduling.
 	String message = "Boat leaving with";
 
 	public StartBoat(int cOnBoat, int mOnBoat) {
@@ -127,6 +130,12 @@ public class StartBoat {
 		}
 	}
 	
+	/**
+	 * Read and parse files.
+	 * @param cannibals  the IDs for cannibals.
+	 * @param missionaries  the IDs for missionaries.
+	 * @throws IOException
+	 */
 	public static void readfile(ArrayList<Integer> cannibals, ArrayList<Integer> missionaries) throws IOException {
 		FileInputStream fstream = new FileInputStream("input.txt");
 		BufferedReader read= new BufferedReader(new InputStreamReader(fstream));

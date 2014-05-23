@@ -1,5 +1,2 @@
 Boat leaving with  Cannibal1  Missionary7  Missionary8
-Boat leaving with  Missionary10  Cannibal2  Missionary1
-Boat leaving with  Missionary2  Cannibal4  Missionary3
-Boat leaving with  Missionary4  Missionary5  Missionary6
-Boat leaving with  Cannibal5  Cannibal6  Cannibal3
+Boat leaving with  Missionary1  Missionary10  Cannibal2
